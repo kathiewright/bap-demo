@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="EN">
+  <head>
+    <meta charset = "utf-8">
+    <title>DC template</title>
+    <link rel="stylesheet" type="text/css" href="dc.min.css"/>
+    <link rel="stylesheet" type="text/css" href="bootstrap.css"/>
+    <style>
+      body.html {
+          height: 100%;
+          margin: 0;
+          padding: 0;
+        }
+        div {
+          -webkit-box-sizing: border-box;
+          -moz-box-sizing: border-box;
+          box-sizing: border-box;
+        }
+        nav {
+         font-size: 16px;
+         font-family: "Arial", cursive;
+         padding-top: 10px;
+         background: white;
+         float: left;
+         width: 960px;
+  }
+        nav ul {
+         text-align: center;
+        }
+
+        nav ul li {
+           display: inline-block;
+           padding: 8px 15px;
+           margin: 0 3px;
+           -moz-border-radius-topleft: 7px;
+           -moz-border-radius-topright: 7px;
+           -webkit-border-top-left-radius: 7px;
+           -webkit-border-top-right-radius: 7px;
+           border-top-left-radius: 7px;
+           border-top-right-radius: 7px;
+           -webkit-box-shadow: 2px -2px 0px #94CEF2,
+                               2px 0px 0px #94CEF2;
+           -moz-box-shadow:    2px -2px 0px #94CEF2,
+                               2px 0px 0px #94CEF2;
+           box-shadow:         2px -2px 0px #94CEF2,
+                               2px 0px 0px #94CEF2;
+        }
+
+        nav ul #currentpage {
+           background: cornflower;
+           color: white;
+        }
+    </style>
+  </head>
+  <body>
+    <nav>
+       <ul>
+            <li id="currentpage"><a href="#">Beta Alpha Psi Chart Demo: Home</a></li>
+            <li id="bar-chart"><a href="bar-chart.html">Bar Charts</a></li>
+            <li id="pie-chart"><a href="pie-chart.html">Pie Chart</a></li>
+            <li id="stacked-area-chart"><a href="stacked-area-chart.html">Stacked Area Charts</a></li>      
+		    </ul>
+    </nav>
+    <br/>
+    <img src="https://cdn.glitch.com/2260aac8-7be6-464e-9dbd-f9e8c245664f%2FBAPSeal.jpg"><img/>
+    <br/><br/><br/><br/>
+    <div class="container">
+      <h2>
+        Data:  Payments by Type
+      </h2>
+       <table id="table" class="table table-hover"></table>     
+    </div>
+
+    
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.js"></script>
+    <script type="text/javascript" src="crossfilter.js"></script>
+    <script type="text/javascript" src="dc.min.js"></script>
+    <script type="text/javascript">
+      
+       
+    var data = [
+      {date: "2011-11-14T16:20:19Z", quantity: 2, total: 190, tip: 100, type: "tab"},
+      {date: "2011-11-14T16:28:54Z", quantity: 1, total: 300, tip: 200, type: "visa"},
+      {date: "2011-11-14T16:30:43Z", quantity: 2, total: 90, tip: 0, type: "tab"},
+      {date: "2011-11-14T16:48:46Z", quantity: 2, total: 90, tip: 0, type: "tab"},
+      {date: "2011-11-14T16:53:41Z", quantity: 2, total: 90, tip: 0, type: "tab"},
+      {date: "2011-11-14T16:54:06Z", quantity: 1, total: 100, tip: 0, type: "cash"},
+      {date: "2011-11-14T16:58:03Z", quantity: 2, total: 90, tip: 0, type: "tab"},
+      {date: "2011-11-14T17:07:21Z", quantity: 2, total: 90, tip: 0, type: "tab"},
+      {date: "2011-11-14T17:22:59Z", quantity: 2, total: 90, tip: 0, type: "tab"},
+      {date: "2011-11-14T17:25:45Z", quantity: 2, total: 200, tip: 0, type: "cash"},
+      {date: "2011-11-14T17:29:52Z", quantity: 1, total: 200, tip: 100, type: "visa"}
+    ];
+      
+      data.forEach(function(d){
+        var tempDate = new Date(d.date);
+        d.date = tempDate;
+      })
+      
+      var facts = crossfilter(data);
+      var dateDimension = facts.dimension(function(d){return d.date;});
+      var dataTable = dc.dataTable("#table")
+        .width(1360)
+        .height(300)
+        .dimension(dateDimension) 
+        .showGroups(false)
+        .group(function(d){return d.type})
+        .columns([{label:'Time', format: function(d){return d.date.getHours()+':'+d.date.getMinutes();}},
+                  'quantity',
+                  'total',
+                  'tip',
+                  'type'])
+        .on("renderlet", function(table){
+          table.selectAll('.dc-table-group').classed('info',true);
+        });
+      
+      dc.renderAll();
+    </script>
+  </body>
+</html>
